@@ -1,0 +1,103 @@
+1.什么是IOC
+（1）控制反转，把对象创建和对象之间的调用过程交给Spring管理
+（2）使用IOC目的为了耦合度降低
+（1）做的案例就是IOC实现
+2.IOC的底层原理
+（1）xml解析，工厂模式，反射
+3.画图讲解IOC   -----------》学习工厂模式
+ IOC（接口）
+ 1.IOC思想基于IOC的容器完成，IOC容器底层就是对象工厂
+ 2.Spring提供IOC容器实现两种方式：（两个接口）
+ （1）BeanFactory ：IOC容器基本实现，是Spring内部的使用接口，不提供给开发人员使用
+  *加载配置文件时候不会创建对象，在获取或者是使用的时候才创建对象
+ （2）ApplicationCOntext ：BeanFactory接口的子接口，提供更多更强大的功能由开发人员使用
+  *加载配置文件时候就会在配置文件对象进行创建
+  IOC操作Bean管理（概念）
+  1.什么是Bean管理
+  （0) Bean管理指的是两个操作---->创建对象，注入属性
+  （1）Spring创建对象
+  （2）Spring注入属性
+  2.Bean管理操作有两种方式
+  （1）基于xml配置文件方式实现
+  （2）基于注解方式实现
+  IOC操作Bean管理（基于xml方式）
+  1.基于xml方式创建对象
+<!--配置User对象创建-->
+    <bean id="usersss" class="com.yjhdemo.spring5.User"></bean>
+</beans>
+（1）在spring配置中使用Bean标签，标签里面添加对应属性，就可以实现对象创建
+（2）在bean标签有很多属性，介绍常用的属性
+*id属性：  获取对象唯一标识
+*class属性：类全路径（包类路径）
+*name属性：基本不用
+（3)创建对象时候，默认也是执行无参数构造方法
+  2.基于xml方式注入属性
+  （1）DI：依赖注入，就是注入属性
+  第一种注入方式：就是使用set方法进行注入
+  (1)创建类，定义属性和对应的set方法
+  /**
+   * 演示使用set方法进行属性的注入
+   */
+  public class Book {
+      //创建属性
+      private String bname;
+      private String bauthor;
+  //    创建属性对应的set方法
+      public void setBname(String bname) {
+          this.bname = bname;
+      }
+
+      public void setBauthor(String bauthor) {
+          this.bauthor = bauthor;
+      }
+  }
+  （2）在spring配置文件配置对象创建，配置属性注入
+  <!--2.set注入属性-->
+      <bean id="book" class="com.yjhdemo.spring5.testdemo.Book">
+          <!--使用property完成属性注入-->
+  <!--        name:属性表示类里面的属性名称，value：表示向该属性注入的值-->
+          <property name="bname" value="123"></property>
+          <property name="bauthor" value="456"></property>
+      </bean>
+  第二种注入方式：使用有参数构造进行注入
+  (1)创建类，定义属性，创建属性对应有参数构造方法
+ （2）在spring配置文件中进行配置
+     <bean id="orders" class="com.yjhdemo.spring5.testdemo.Orders">
+         <constructor-arg name="oname" value="123"></constructor-arg>
+         <constructor-arg name="address" value="753"></constructor-arg>
+ <!--   <constructor-arg index="0" value=""></constructor-arg>-->
+ <!--  其中index是通过索引值进行赋值操作  -->
+     </bean>
+     5.p名称空间注入
+     （1）使用p名称空间注入，可以简化基于xml配置方式
+     第一步添加p名称空间在配置文件中
+     <beans xmlns="http://www.springframework.org/schema/beans"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:util="http://www.springframework.org/schema/util"
+            xmlns:p="http://www.springframework.org/schema/p"
+            xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+     第二步进行属性注入，在bean标签里进行操作
+         <bean id="book" class="com.yjhdemo.spring5.testdemo.Book" p:bname="jysg" p:bauthor="jfsaj"></bean>
+IOC 操作Bean 管理（xml注入其他类型属性）
+1.字面量
+（1）null值
+<bean id="books" class="com.yjhdemo.spring5.testdemo.Books">
+    <property name="bname" value="圆梦是傻逼"></property>
+    <property name="bauthor" value="天使添屎圆梦"></property>
+    <property name="address">
+        <null></null>
+    </property>
+</bean>
+（2）属性值包含特殊符号
+<!--
+1.把尖括号进行转义
+2.把带特殊符号内容写到CDATA中
+-->
+    <property name="address">
+        <value>
+            <![CDATA[<<南京>>]]>
+        </value>
+    </property>
+2.
+
+
