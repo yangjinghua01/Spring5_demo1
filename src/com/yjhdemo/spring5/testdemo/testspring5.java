@@ -1,6 +1,7 @@
 package com.yjhdemo.spring5.testdemo;
 
 import com.yjhdemo.spring5.User;
+import com.yjhdemo.spring5.collecttiontype.Stu;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -40,5 +41,12 @@ public class testspring5 {
         Books books = context.getBean("books",Books.class);
         System.out.println(books);
         books.testdemo();
+    }
+    @Test
+    public void teststu(){
+        ApplicationContext context = new ClassPathXmlApplicationContext("BeanOne.xml");
+        Stu stu = context.getBean("stu", Stu.class);
+        System.out.println(stu);
+        stu.out();
     }
 }
