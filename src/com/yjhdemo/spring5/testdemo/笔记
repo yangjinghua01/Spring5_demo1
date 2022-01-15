@@ -203,4 +203,52 @@ IOC操作Bean管理（xml注入集合属性）
             </set>
         </property>
     </bean>
+4.在集合里设置对象类型值
+        <property name="courseList">
+            <list>
+                <ref bean="course1"></ref>
+                <ref bean="course2"></ref>
+            </list>
+        </property>
+    </bean>
+    <!--    创建多个对象-->
+    <bean id="course1" class="com.yjhdemo.spring5.collecttiontype.Course">
+        <property name="cname" value="Spring5框架课程"></property>
+    </bean>
+    <bean id="course2" class="com.yjhdemo.spring5.collecttiontype.Course">
+        <property name="cname" value="我的鸟框架"></property>
+    </bean>
+5.把集合注入部分提取出来
+（1）在spring配置文件中先引入名称空间这个命名空间叫做Util
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/beans/spring-util.xsd">
+<!--    集合类型属性注入-->
+</beans>
+修改xml的文件头
+使用util标签完成list集合注入提取
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/beans/spring-util.xsd">
+<!--    提取list集合类型属性注入-->
+    <util:list id="booklist">
+        <value>安卓第一行代码</value>
+        <value>疯狂安卓讲义</value>
+        <value>安卓群英会</value>
+    </util:list>
+    <bean id="book" class="com.yjhdemo.spring5.collecttiontype.Book">
+        <property name="list" ref="booklist">
+        </property>
+    </bean>
+</beans>
+抽取后的完整代码
+
 

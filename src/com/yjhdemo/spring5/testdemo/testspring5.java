@@ -49,4 +49,11 @@ public class testspring5 {
         System.out.println(stu);
         stu.out();
     }
+    @Test
+    public void teststu1(){
+        ApplicationContext context = new ClassPathXmlApplicationContext("Beantow.xml");
+        com.yjhdemo.spring5.collecttiontype.Book book = context.getBean("book", com.yjhdemo.spring5.collecttiontype.Book.class);
+        System.out.println(book);
+        book.test();
+    }
 }
