@@ -11,8 +11,10 @@
         <value>疯狂安卓讲义</value>
         <value>安卓群英会</value>
     </util:list>
-    <bean id="book" class="com.yjhdemo.spring5.collecttiontype.Book">
+<!--    提取list集合类型属性注入使用-->
+    <bean id="book" class="com.yjhdemo.spring5.collecttiontype.Book" scope="prototype">
         <property name="list" ref="booklist">
         </property>
     </bean>
+
 </beans>

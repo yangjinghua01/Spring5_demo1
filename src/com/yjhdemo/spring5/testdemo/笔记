@@ -289,5 +289,181 @@ IOC操作Bean管理（factotybean）
             return false;
         }
     }
+IOC bean操作管理（Bean作用域）
+1.在Spring里面，设置创建Bean实例是单实例还是多实例
+2.在Spring里面没人情况下Bean是单实例对象
+    @Test
+    public void teststu1(){
+        ApplicationContext context = new ClassPathXmlApplicationContext("Beantow.xml");
+        com.yjhdemo.spring5.collecttiontype.Book book = context.getBean("book", com.yjhdemo.spring5.collecttiontype.Book.class);
+        com.yjhdemo.spring5.collecttiontype.Book book1 = context.getBean("book", com.yjhdemo.spring5.collecttiontype.Book.class);
+        System.out.println(book);
+//        book.test();
+        System.out.println(book1);
+    }
 
+
+
+    "C:\Program Files\Java\jdk-14.0.2\bin\java.exe" -ea -Didea.test.cyclic.buffer.size=1048576 "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2020.1.1\lib\idea_rt.jar=58900:C:\Program Files\JetBrains\IntelliJ IDEA 2020.1.1\bin" -Dfile.encoding=UTF-8 -classpath "C:\Program Files\JetBrains\IntelliJ IDEA 2020.1.1\lib\idea_rt.jar;C:\Program Files\JetBrains\IntelliJ IDEA 2020.1.1\plugins\junit\lib\junit5-rt.jar;C:\Program Files\JetBrains\IntelliJ IDEA 2020.1.1\plugins\junit\lib\junit-rt.jar;C:\Users\16920\Desktop\Spring5_demo\out\production\Spring5_demo;C:\Users\16920\Desktop\Spring5_demo\lib\commons-logging-1.1.1.jar;C:\Users\16920\Desktop\Spring5_demo\lib\spring-beans-5.2.6.RELEASE.jar;C:\Users\16920\Desktop\Spring5_demo\lib\spring-expression-5.2.6.RELEASE.jar;C:\Users\16920\Desktop\Spring5_demo\lib\spring-core-5.2.6.RELEASE.jar;C:\Users\16920\Desktop\Spring5_demo;C:\Users\16920\.m2\repository\junit\junit\4.12\junit-4.12.jar;C:\Users\16920\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;C:\Users\16920\Desktop\Spring5_demo\lib\spring-context-5.2.6.RELEASE.jar" com.intellij.rt.junit.JUnitStarter -ideVersion5 -junit4 com.yjhdemo.spring5.testdemo.testspring5,teststu1
+    com.yjhdemo.spring5.collecttiontype.Book@3a52dba3
+    com.yjhdemo.spring5.collecttiontype.Book@3a52dba3
+
+    Process finished with exit code 0
+    经过测试发现是单实例对象
+    3.如何设置单实例还是多实例
+    （1）在spring配置文件Bean标签里面有属性(scope)用于设置单实例还是多实例
+    （2）scop属性值
+    第一个值 默认值 singleton 表示单实例对象
+    第二个值 prototype，表示多实例
+    通过修改配置文件做到多实例模式
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:p="http://www.springframework.org/schema/p"
+           xmlns:util="http://www.springframework.org/schema/util"
+           xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    <!--    提取list集合类型属性注入-->
+        <util:list id="booklist">
+            <value>安卓第一行代码</value>
+            <value>疯狂安卓讲义</value>
+            <value>安卓群英会</value>
+        </util:list>
+    <!--    提取list集合类型属性注入使用-->
+        <bean id="book" class="com.yjhdemo.spring5.collecttiontype.Book" scope="prototype">
+            <property name="list" ref="booklist">
+            </property>
+        </bean>
+    </beans>
+
+
+    测试代码如下
+        @Test
+        public void teststu1(){
+            ApplicationContext context = new ClassPathXmlApplicationContext("Beantow.xml");
+            com.yjhdemo.spring5.collecttiontype.Book book = context.getBean("book", com.yjhdemo.spring5.collecttiontype.Book.class);
+            com.yjhdemo.spring5.collecttiontype.Book book1 = context.getBean("book", com.yjhdemo.spring5.collecttiontype.Book.class);
+            System.out.println(book);
+    //        book.test();
+            System.out.println(book1);
+        }
+        结果如下
+        com.yjhdemo.spring5.collecttiontype.Book@24aed80c
+        com.yjhdemo.spring5.collecttiontype.Book@3a52dba3
+        （3）singleton和prototype的区别
+        第一singleton单实例prototype多实例
+        第二 设置scope值是singleton时候，加载spring配置文件时候就会创建单实例对象
+            设置scope值是prototype时候，不是在加载spring配置文件时候创建对象，在调用getBean方法适合创建多实例对象
+            还有两个属性周期
+            request
+            session
+IOC Bean的生命周期
+1.生命周期
+（1)从对象创建到对象销毁的过程
+2.bean生命周期
+（1）通过构造器创建Bean实例（无参数的构造）
+（2）为bean的属性设置值和对其他Bean的引用（调用setter方法）
+ 第三步为把Bean的实例传递给Bean的后置处理器方法 （执行该方法 postProcessBeforeInitialization）
+ 第四步把bean实例传递bean后置处理器的方法
+（3）（第四步）调用Bean的初始化方法（需要进行配置）（执行该方法 postProcessAfterInitialization）
+（4）（第六步）Bean可以使用了（对象获取到了）
+（5）（第七步）当容器关闭时候，调用Bean的销毁方法。（需要进行配置销毁的方法）
+3.演示生命周期
+测试代码段
+    @Test
+    public void Beanlifetime(){
+        ApplicationContext context = new ClassPathXmlApplicationContext("Beanfour.xml");
+        Order order = context.getBean("order", Order.class);
+        System.out.println("获得Bean实例对象");
+        System.out.println(order);
+//        手动销毁Bean实例
+        ((ClassPathXmlApplicationContext) context).close();
+    }
+相关配置文件
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<bean id="order" class="com.yjhdemo.spring5.Beans.Order" init-method="initmethod" destroy-method="DestroyMethod">
+    <property name="oname" value="淘宝"></property>
+</bean>
+</beans>
+测试bean
+package com.yjhdemo.spring5.Beans;
+
+public class Order {
+    private String oname;
+
+    public Order() {
+        System.out.println("无参构造执行");
+    }
+
+    public void setOname(String oname) {
+        this.oname = oname;
+        System.out.println("执行setter方法");
+    }
+//    创建执行初始化的方法
+    public  void initmethod(){
+        System.out.println("执行初始化方法");
+    }
+//    创建销毁的方法
+    public void DestroyMethod(){
+        System.out.println("执行bean销毁的方法");
+    }
+}
+ 4.Bean后置处理器，Bean的生命周期有七步
+ 如果有后置处理器的话
+ 第三步为把Bean的实例传递给Bean的后置处理器方法
+5.演示添加后置处理器效果
+（1）创建类，实现接口BeanPostProcess，创建后置处理器
+需要的实现的类
+package com.yjhdemo.spring5.Beans;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+
+public class MyBeanPost implements BeanPostProcessor {
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        System.out.println("在初始化之前执行的方法");
+        return bean;
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        System.out.println("在初始化之后执行的方法");
+        return bean;
+    }
+}
+需要增加的配置
+ <!--    配置后置处理器-->
+    <!--    为当前配置文件中的所以Bean配置处理器-->
+    <bean id="myBeanPost" class="com.yjhdemo.spring5.Beans.MyBeanPost"></bean>
+    执行后的输出
+
+    无参构造执行
+    执行setter方法
+    在初始化之前执行的方法
+    执行初始化方法
+    在初始化之后执行的方法
+    获得Bean实例对象
+    com.yjhdemo.spring5.Beans.Order@7b98f307
+    执行bean销毁的方法
+    IOC操作自动装配
+    1.什么是自动装配
+    （1）根据指定装配规则（属性名称或者属性类型），Spring自动将匹配的属性值进行注入
+    2.演示自动装配的过程
+    （1）根据属性名称自动注入
+    <!--实现自动装配
+    bean标签中autowire，配置自动装配
+       autowore属性常用俩个值：
+       byname根据属性名称注入，注意注入id的值和类属性名称一样
+       bytype根据属性类型注入-->
+
+        <bean id="emp" class="com.yjhdemo.spring5.autowire.Emp" autowire="byName">
+    <!--    <property name="dept" ref="dept"></property>-->
+    </bean>
+        <bean id="dept" class="com.yjhdemo.spring5.autowire.Dept">
+
+        </bean>
 
