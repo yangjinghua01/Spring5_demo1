@@ -250,5 +250,44 @@ IOC操作Bean管理（xml注入集合属性）
     </bean>
 </beans>
 抽取后的完整代码
+IOC操作Bean管理（factotybean）
+1.Spring 有两种类型bean，一种普通bean，另一种工厂Bean（Factorybean）
+
+2.普通bean:在配置文件中定义bean类型就是返回类型
+
+3.工厂bean 在配置文件定义Bean类型可以和返回类型不一样。
+第一步创建类，让这个类作为工厂bean实现接口factorybean
+第二部是先接口里面的方法，在实现的方法中定义返回的Bean类型
+    @Test
+    public void teststu3(){
+        ApplicationContext context = new ClassPathXmlApplicationContext("Beanthree.xml");
+        Course myBean = context.getBean("Mybean", Course.class);
+        System.out.println(myBean);
+//        book.test();
+    }
+    package com.yjhdemo.spring5.factorybean;
+
+    import com.yjhdemo.spring5.collecttiontype.Course;
+    import org.springframework.beans.factory.FactoryBean;
+
+    public class MyBean implements FactoryBean <Course>{
+    //
+        @Override
+        public Course getObject() throws Exception {
+            Course course = new Course();
+            course.setCname("456");
+            return course;
+        }
+    //定义返回bean
+        @Override
+        public Class<?> getObjectType() {
+            return null;
+        }
+
+        @Override
+        public boolean isSingleton() {
+            return false;
+        }
+    }
 
 
